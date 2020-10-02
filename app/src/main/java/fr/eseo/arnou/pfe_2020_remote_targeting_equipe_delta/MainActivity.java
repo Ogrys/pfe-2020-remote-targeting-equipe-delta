@@ -24,8 +24,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta.Network.WifiDirectBroadcastReceiver;
-
 public class MainActivity extends AppCompatActivity {
 
 
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
     }
 
-    WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
+    public WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList peerList) {
             if (!peerList.getDeviceList().equals(peers))
