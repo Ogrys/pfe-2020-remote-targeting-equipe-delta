@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnOnOff, btnDiscover, btnSend;
     ListView listView;
-    TextView read_msg_box, connectionStatus;
+    public TextView read_msg_box, connectionStatus;
     EditText writeMsg;
 
     WifiManager wifiManager;
