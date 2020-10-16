@@ -10,6 +10,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.InetAddresses;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -21,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,7 +47,7 @@ import java.util.List;
 
 import fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta.Network.WifiDirectBroadcastReceiver;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
 
     Button btnOnOff, btnDiscover, btnSend;
@@ -67,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
     ClientClass clientClass;
     SendReceive sendReceive;
 
+    private SensorManager mSensorManager;
+    private Sensor mAccelerator;
+
+    private Thread thread;
+
+    String xValue;
+    String yValue;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initialWork();
         exqListener();
+        startPlot();
 
     }
 
@@ -152,10 +166,38 @@ public class MainActivity extends AppCompatActivity {
                 StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
                 StrictMode.setThreadPolicy(policy);
-                String msg=writeMsg.getText().toString();
-                sendReceive.write(msg.getBytes());
+                //String msg=writeMsg.getText().toString();
+                //sendReceive.write(msg.getBytes());
+                sendReceive.write(xValue.getBytes());
             }
         });
+    }
+
+    private void startPlot(){
+        if(thread != null){
+            thread.interrupt();
+        }
+
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        Thread.sleep(10);
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        thread.start();
+    }
+
+    private void addEntry(SensorEvent event){
+        Log.d("test_x",String.valueOf(event.values[0]));
+        xValue = String.valueOf(event.values[0]);
+        Log.d("test_y",String.valueOf(event.values[1]));
+        yValue = String.valueOf(event.values[1]);
     }
 
 
@@ -181,6 +223,13 @@ public class MainActivity extends AppCompatActivity {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerator = mSensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+
+        if(mAccelerator != null){
+            mSensorManager.registerListener(this,mAccelerator,SensorManager.SENSOR_DELAY_GAME);
+        }
     }
 
     public WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
@@ -231,12 +280,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         registerReceiver(mReceiver,mIntentFilter);
+        mSensorManager.registerListener(this,mAccelerator,SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         unregisterReceiver(mReceiver);
+        if(thread != null){
+            thread.interrupt();
+        }
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        addEntry(event);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
     public class ServerClass extends Thread{
