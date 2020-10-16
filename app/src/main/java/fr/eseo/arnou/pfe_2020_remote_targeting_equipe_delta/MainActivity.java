@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     String xValue;
     String yValue;
+    Boolean sendData = false;
 
 
     @Override
@@ -194,10 +195,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void addEntry(SensorEvent event){
-        Log.d("test_x",String.valueOf(event.values[0]));
-        xValue = String.valueOf(event.values[0]);
-        Log.d("test_y",String.valueOf(event.values[1]));
-        yValue = String.valueOf(event.values[1]);
+        Log.d("test_","ici");
+        if(sendData) {
+            Log.d("test_x", String.valueOf(event.values[0]));
+            xValue = String.valueOf(event.values[0]);
+            Log.d("test_y", String.valueOf(event.values[1]));
+            yValue = String.valueOf(event.values[1]);
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            try{
+                sendReceive.write(xValue.getBytes());
+            }catch (Exception e){
+                Log.d("error", e.getMessage());
+            }
+
+        }
     }
 
 
@@ -303,6 +315,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+    @Override
+    public void onPostResume() {
+        super.onPostResume();
+    }
+
     public class ServerClass extends Thread{
         Socket socket;
         ServerSocket serverSocket;
@@ -376,6 +393,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 socket.connect(new InetSocketAddress(hostAdd,8888),500);
                 sendReceive = new SendReceive(socket);
                 sendReceive.start();
+                sendData = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
