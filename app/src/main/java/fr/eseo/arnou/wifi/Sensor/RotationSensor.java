@@ -1,7 +1,6 @@
-package fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta.Sensor;
+package fr.eseo.arnou.wifi.Sensor;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -11,7 +10,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta.R;
+import fr.eseo.arnou.wifi.R;
 
 public class RotationSensor extends AppCompatActivity implements SensorEventListener {
 
@@ -23,7 +22,7 @@ public class RotationSensor extends AppCompatActivity implements SensorEventList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta.R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerator = mSensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
@@ -31,46 +30,6 @@ public class RotationSensor extends AppCompatActivity implements SensorEventList
         if(mAccelerator != null){
             mSensorManager.registerListener(this,mAccelerator,SensorManager.SENSOR_DELAY_GAME);
         }
-
-        /*mChart = (LineChart) findViewById(R.id.chart1);
-
-        mChart.getDescription().setEnabled(true);
-        mChart.getDescription().setText("Real time accelerometer");
-
-        mChart.setTouchEnabled(false);
-        mChart.setDragEnabled(false);
-        mChart.setScaleEnabled(false);
-        mChart.setDrawGridBackground(false);
-        mChart.setPinchZoom(false);
-        mChart.setBackgroundColor(Color.WHITE);
-
-        LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
-        mChart.setData(data);
-
-        Legend l = mChart.getLegend();
-        l.setForm(Legend.LegendForm.LINE);
-        l.setTextColor(Color.WHITE);
-
-        XAxis xl = mChart.getXAxis();
-        xl.setTextColor(Color.WHITE);
-        xl.setDrawGridLines(true);
-        xl.setAvoidFirstLastClipping(true);
-        xl.setEnabled(true);
-
-        YAxis yl = mChart.getAxisLeft();
-        yl.setTextColor(Color.WHITE);
-        yl.setDrawGridLines(false);
-        yl.setAxisMaximum(10f);
-        yl.setAxisMinimum(0f);
-        yl.setDrawGridLines(true);
-
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setEnabled(false);
-
-        mChart.getAxisLeft().setDrawGridLines(false);
-        mChart.getXAxis().setDrawGridLines(false);
-        mChart.setDrawBorders(false);*/
 
         startPlot();
 

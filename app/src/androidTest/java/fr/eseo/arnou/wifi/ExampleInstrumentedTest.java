@@ -1,4 +1,4 @@
-package fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta;
+package fr.eseo.arnou.wifi;
 
 import android.content.Context;
 

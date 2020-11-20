@@ -1,25 +1,21 @@
-package fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta.Network;
+package fr.eseo.arnou.wifi.Network;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
+import fr.eseo.arnou.wifi.MainActivity;
 
-import fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta.MainActivity;
-
-public class WifiDirectBroadcastReceiver extends BroadcastReceiver {
+public class BroadRec extends BroadcastReceiver {
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     private MainActivity mActivity;
 
-    public WifiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, MainActivity mActivity) {
+    public BroadRec(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, MainActivity mActivity) {
         this.mManager = mManager;
         this.mChannel = mChannel;
         this.mActivity = mActivity;

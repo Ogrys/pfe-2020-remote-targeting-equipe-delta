@@ -1,20 +1,16 @@
-package fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta;
+package fr.eseo.arnou.wifi;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.InetAddresses;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -45,12 +41,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta.Network.WifiDirectBroadcastReceiver;
+import fr.eseo.arnou.wifi.Network.BroadRec;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
 
-    Button btnOnOff, btnDiscover, btnSend;
+    Button btnOnOff, btnDiscover, btnSetSensor;
     ListView listView;
     public TextView read_msg_box, connectionStatus;
     EditText writeMsg;
@@ -106,6 +102,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     });
 
+    public void setSensor(View arg0){
+        Log.d("test_setSensor","test setSensor");
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerator = mSensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+
+        if(mAccelerator != null){
+            mSensorManager.registerListener(this,mAccelerator,SensorManager.SENSOR_DELAY_GAME);
+        }
+    }
+
 
     private void exqListener() {
         btnOnOff.setOnClickListener(new View.OnClickListener() {
@@ -160,18 +166,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 });
             }
         });
-
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
-                StrictMode.setThreadPolicy(policy);
-                //String msg=writeMsg.getText().toString();
-                //sendReceive.write(msg.getBytes());
-                sendReceive.write(xValue.getBytes());
-            }
-        });
     }
 
     private void startPlot(){
@@ -217,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void initialWork() {
         btnOnOff = (Button) findViewById(R.id.onOff);
         btnDiscover = (Button) findViewById(R.id.discover);
-        btnSend = (Button) findViewById(R.id.sendButton);
+        btnSetSensor = (Button) findViewById(R.id.setSensor);
         listView = (ListView) findViewById(R.id.peerListView);
         writeMsg = (EditText) findViewById(R.id.writeMsg);
         read_msg_box = (TextView) findViewById(R.id.readMsg);
@@ -228,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mManager= (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel= mManager.initialize(this, getMainLooper(), null);
 
-        mReceiver =new WifiDirectBroadcastReceiver(mManager, mChannel, this);
+        mReceiver =new BroadRec(mManager, mChannel, this);
 
         mIntentFilter= new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);

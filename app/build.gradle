@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "fr.eseo.arnou.pfe_2020_remote_targeting_equipe_delta"
+        applicationId "fr.eseo.arnou.wifi"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
